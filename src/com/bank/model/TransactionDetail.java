@@ -5,22 +5,22 @@
  *
  */
 
-package com.bank.account;
+package com.bank.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class LedgerEntry implements Comparable<LedgerEntry> {
+public class TransactionDetail implements Comparable<TransactionDetail> {
 
     private final EntryType transactionType;
-    private final long transactionId;
+    private final String transactionId;
     private final LocalDateTime transactionDate;
     private final String narration;
     private final BigDecimal withdrawalAmount;
     private final BigDecimal depositAmount;
     private final BigDecimal closingBalance;
 
-    public LedgerEntry(EntryType transactionType, long transactionId, String narration, BigDecimal withdrawalAmount, BigDecimal depositAmount, BigDecimal closingBalance) {
+    public TransactionDetail(EntryType transactionType, String transactionId, String narration, BigDecimal withdrawalAmount, BigDecimal depositAmount, BigDecimal closingBalance) {
         this.transactionType = transactionType;
         this.transactionId = transactionId;
         this.transactionDate = LocalDateTime.now();
@@ -39,7 +39,7 @@ public class LedgerEntry implements Comparable<LedgerEntry> {
 
     @Override
     public String toString() {
-        return "LedgerEntry{" +
+        return "TransactionDetail{" +
                 "transactionType=" + transactionType +
                 ", transactionId=" + transactionId +
                 ", transactionDate=" + transactionDate +
@@ -50,13 +50,13 @@ public class LedgerEntry implements Comparable<LedgerEntry> {
                 '}';
     }
 
-    private String roundAndFormatBigDecimal(BigDecimal amount){
+    private String roundAndFormatBigDecimal(BigDecimal amount) {
         return amount.setScale(2, BigDecimal.ROUND_HALF_EVEN).toPlainString();
     }
 
 
     @Override
-    public int compareTo(LedgerEntry o) {
+    public int compareTo(TransactionDetail o) {
         return this.transactionDate.compareTo(o.transactionDate);
     }
 }

@@ -7,55 +7,33 @@
 
 package com.bank;
 
-import com.bank.account.BaseAccount;
-import com.bank.exception.BankingException;
-import com.bank.service.AccountManagerFacade;
-import com.bank.service.AccountManagerFacadeImpl;
-
-import java.math.BigDecimal;
+import com.bank.common.BankFacade;
+import com.bank.common.BankFacadeImpl;
 
 class BankSimulator {
-    private final AccountManagerFacade accountManagerFacade = new AccountManagerFacadeImpl();
+    private final BankFacade bankFacade = new BankFacadeImpl();
 
     public void runSimulation() {
-        loggerError(" Starting Simulation ");
-        try {
-            accountManagerFacade.listAllAccounts();
-            BaseAccount accountOne = accountManagerFacade.createAccount(TestingUtility.getDefaultSavingAccountCreationRequest());
-            BaseAccount accountTwo = accountManagerFacade.createAccount(TestingUtility.getDefaultSavingAccountCreationRequest());
-            accountManagerFacade.activateAccount(accountOne);
-            accountManagerFacade.listAllAccounts();
-            accountManagerFacade.activateAccount(accountTwo);
-            accountManagerFacade.listAllAccounts();
-            accountManagerFacade.depositTo(accountOne, new BigDecimal(1200.00));
-            loggerInfo(" Printing account state : " + accountOne.toString());
-            accountManagerFacade.depositTo(accountTwo, new BigDecimal(200.00));
-            loggerInfo(" Printing account state : " + accountTwo.toString());
-            accountManagerFacade.withdrawFrom(accountOne, new BigDecimal(100.00));
-            accountManagerFacade.withdrawFrom(accountTwo, new BigDecimal(3000.00));
-            loggerInfo(" Printing account state : " + accountTwo.toString());
-            loggerInfo(" Printing account state : " + accountOne.toString());
-            accountManagerFacade.transfer(accountOne, accountTwo, new BigDecimal(111));
-            loggerInfo(" Printing account state : " + accountTwo.toString());
-            loggerInfo(" Printing account state : " + accountOne.toString());
-            accountManagerFacade.transfer(accountTwo, accountOne, new BigDecimal(1000));
-            accountManagerFacade.transfer(accountOne, accountTwo, new BigDecimal(1010));
-            accountManagerFacade.transfer(accountTwo, accountOne, new BigDecimal(2300));
-            accountManagerFacade.deActivateAccount(accountOne);
-            accountManagerFacade.deleteAccount(accountTwo);
-            accountOne.printLast10Transactions();
-            accountTwo.printLast10Transactions();
-            accountManagerFacade.listAllAccounts();
-        } catch (BankingException e) {
-            loggerError(" Exception details : " + e.getMessage());
-        }
+        loggerInfo(" Starting Simulation ");
+        long accountOne = bankFacade.createAccount("Tester One", "Sector 56, Delhi", "2000.00");
+        long accountTwo = bankFacade.createAccount("Tester Two", "Sector 63, Delhi", "4000.00");
+        bankFacade.deposit(accountOne, "1200.00");
+        bankFacade.deposit(accountTwo, "200.00");
+        bankFacade.withdraw(accountOne, "100.00");
+        bankFacade.withdraw(accountTwo, "3000.00");
+        bankFacade.transfer(accountOne, accountTwo, "111");
+        bankFacade.transfer(accountTwo, accountOne, "1000");
+        bankFacade.getBalance(accountTwo);
+        bankFacade.transfer(accountOne, accountTwo, "1010");
+        bankFacade.transfer(accountTwo, accountOne, "2300");
+        bankFacade.printLast10Transactions(accountOne);
+        bankFacade.printLast10Transactions(accountTwo);
+        bankFacade.printAllTransactions(accountTwo);
+        bankFacade.deleteAccount(accountTwo);
+        loggerInfo(" Simulation Completed ");
     }
 
     private void loggerInfo(String message) {
         System.out.println("LOGGER : INFO | " + this.getClass().getName() + " | THREAD " + Thread.currentThread().getName() + " | " + System.currentTimeMillis() + " | " + message);
-    }
-
-    private void loggerError(String message) {
-        System.err.println("LOGGER : ERROR | " + this.getClass().getName() + " | THREAD " + Thread.currentThread().getName() + " | " + System.currentTimeMillis() + " | " + message);
     }
 }
